@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <style>
+    :root {
+      --bg-primary: #0a0a1a;
+      --bg-secondary: #12122a;
+      --bg-card: rgba(20, 20, 60, 0.6);
+      --text-primary: #e8e8f0;
+      --text-secondary: #a0a0c0;
+      --accent: #ff6b4a;
+      --accent-glow: rgba(255, 107, 74, 0.4);
+      --border: rgba(255, 107, 74, 0.2);
+      --gold: #ffc107;
+      --gradient-1: #ff5c35;
+      --gradient-2: #ff1e00;
+    }
+    [data-theme="light"] {
+      --bg-primary: #f0f0f8;
+      --bg-secondary: #e8e8f5;
+      --bg-card: rgba(255, 255, 255, 0.8);
+      --text-primary: #1a1a2e;
+      --text-secondary: #555;
+      --accent: #ff5c35;
+      --accent-glow: rgba(255, 92, 53, 0.3);
+      --border: rgba(255, 92, 53, 0.3);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      width: 380px;
+      min-height: 500px;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      overflow: hidden;
+      position: relative;
+    }
+    .bg-aurora {
+      position: fixed;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(ellipse at 30% 20%, rgba(255, 107, 74, 0.15) 0%, transparent 50%),
+                  radial-gradient(ellipse at 70% 60%, rgba(100, 150, 255, 0.12) 0%, transparent 50%),
+                  radial-gradient(ellipse at 50% 80%, rgba(160, 80, 255, 0.1) 0%, transparent 50%),
+                  radial-gradient(ellipse at 20% 80%, rgba(255, 180, 50, 0.08) 0%, transparent 50%);
+      animation: auroraMove 15s ease-in-out infinite;
+      z-index: 0;
+      pointer-events: none;
+    }
+    @keyframes auroraMove {
+      0%, 100% { transform: translate(0, 0) rotate(0deg); }
+      25% { transform: translate(2%, -2%) rotate(1deg); }
+      50% { transform: translate(-1%, 1%) rotate(-1deg); }
+      75% { transform: translate(-2%, -1%) rotate(0.5deg); }
+    }
+    .content-wrapper {
+      position: relative;
+      z-index: 1;
+      padding: 16px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 8px;
+    }
+    .logo-area {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .logo-icon {
+      width: 28px;
+      height: 28px;
+      background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 16px;
+    }
+    .logo-text {
+      font-size: 15px;
+      font-weight: 700;
+      background: linear-gradient(135deg, #ff5c35, #ff9a76);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .theme-toggle {
+      position: relative;
+      width: 52px;
+      height: 28px;
+      background: var(--bg-secondary);
+      border-radius: 28px;
+      cursor: pointer;
+      border: 2px solid rgba(255, 107, 74, 0.3);
+      transition: all 0.4s ease;
+      overflow: hidden;
+    }
+    .theme-toggle::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, #ff5c35, #ff8a65);
+      opacity: 0;
+      transition: opacity 0.4s;
+    }
+    .theme-toggle.dark::before { opacity: 1; }
+    .toggle-thumb {
+      position: absolute;
+      top: 2px;  /* было 3px, поднято для центрирования */
+      left: 3px;
+      width: 22px;
+      height: 22px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55), background 0.4s;
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+    }
+    .theme-toggle.dark .toggle-thumb {
+      transform: translateX(22px);
+      background: #1a1a2e;
+    }
+    .lang-btn {
+      background: var(--bg-secondary);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-weight: 700;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.3s;
+      margin-right: 8px;
+    }
+    .lang-btn:hover {
+      background: rgba(255, 107, 74, 0.2);
+      color: var(--text-primary);
+      border-color: var(--accent);
+    }
+    .action-buttons {
+      display: flex;
+      gap: 8px;
+    }
+    .btn {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: all 0.3s ease;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--gradient-1), var(--gradient-2));
+      color: white;
+      box-shadow: 0 4px 15px var(--accent-glow);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 20px var(--accent-glow);
+    }
+    .btn-secondary {
+      background: var(--bg-card);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+    }
+    .btn-secondary:hover {
+      background: rgba(255, 107, 74, 0.15);
+      border-color: var(--accent);
+    }
+    .switches-group {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 8px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+    .switch-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .switch-label { font-size: 12px; font-weight: 500; color: var(--text-secondary); }
+    .mini-switch {
+      position: relative;
+      width: 36px;
+      height: 20px;
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);   /* рамка, чтобы тумблер был виден в светлой теме */
+      border-radius: 20px;
+      cursor: pointer;
+      transition: background 0.3s, border-color 0.3s;
+    }
+    .mini-switch.active {
+      background: var(--accent);
+      border-color: transparent;
+    }
+    .mini-switch::after {
+      content: '';
+      position: absolute;
+      top: 1px;      /* с учётом рамки центрируем */
+      left: 1px;
+      width: 16px;
+      height: 16px;
+      background: white;
+      border-radius: 50%;
+      transition: transform 0.3s;
+    }
+    .mini-switch.active::after { transform: translateX(16px); }
+
+    .cx-row {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin: 6px 0;
+      position: relative;
+    }
+    .cx-domain {
+      flex: 1;
+      font-size: 12px;
+      color: var(--text-primary);
+      padding: 8px 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .btn-save-cx {
+      width: 42px;
+      height: 42px;
+      background: var(--accent);
+      border: none;
+      border-radius: 10px;
+      color: white;
+      font-size: 18px;
+      cursor: pointer;
+      box-shadow: 0 4px 12px var(--accent-glow);
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .btn-save-cx:hover { box-shadow: 0 6px 18px var(--accent-glow); transform: translateY(-1px); }
+
+    /* Вкладки – исправлено обрезание тени */
+    .tabs-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 12px;   /* увеличен отступ, чтобы тень не обрезалась */
+      margin-bottom: -8px;    /* компенсация, чтобы не раздвигать контент */
+      /* убрано скрытие, оставлено авто с видимой тенью */
+    }
+    .tab {
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: none;
+      background: var(--bg-card);
+      color: var(--text-secondary);
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.3s;
+      backdrop-filter: blur(10px);
+      /* тень добавит .active */
+    }
+    .tab.active {
+      background: var(--accent);
+      color: white;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+    .tab-add {
+      padding: 8px;
+      min-width: 36px;
+      border-radius: 20px;
+      background: transparent;
+      border: 2px dashed rgba(255, 107, 74, 0.4);
+      color: var(--accent);
+      font-size: 16px;
+      cursor: pointer;
+    }
+    .status-text { font-size: 11px; color: var(--text-secondary); text-align: center; }
+    .list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 240px;
+      overflow-y: auto;
+      padding-right: 4px;
+    }
+    .list::-webkit-scrollbar { width: 4px; }
+    .list::-webkit-scrollbar-track { background: transparent; }
+    .list::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 4px; }
+    .card {
+      display: flex;
+      align-items: center;
+      padding: 10px 12px;
+      background: var(--bg-card);
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      backdrop-filter: blur(10px);
+      transition: all 0.3s;
+      gap: 8px;
+    }
+    .card:hover { background: rgba(255, 107, 74, 0.1); border-color: var(--accent); }
+    .card.pinned {
+      border-color: rgba(255, 193, 7, 0.5);
+      box-shadow: 0 0 12px rgba(255, 193, 7, 0.2);
+    }
+    .card-icon { font-size: 18px; flex-shrink: 0; }
+    .card-title {
+      flex: 1;
+      font-size: 13px;
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      cursor: pointer;
+      color: var(--text-primary);
+    }
+    .card-title:hover { color: var(--accent); }
+    .card-rating { font-size: 13px; white-space: nowrap; }
+    .card-menu, .card-delete {
+      background: none;
+      border: none;
+      font-size: 16px;
+      cursor: pointer;
+      padding: 4px;
+      border-radius: 6px;
+      transition: 0.2s;
+      color: var(--text-secondary);
+      flex-shrink: 0;
+    }
+    .card-menu:hover { background: rgba(255, 255, 255, 0.1); color: white; }
+    .card-delete:hover { background: rgba(255, 0, 0, 0.2); color: #ff4444; }
+    .context-menu {
+      position: fixed;
+      background: var(--bg-secondary);
+      border: 1px solid var(--accent);
+      border-radius: 10px;
+      padding: 6px 0;
+      z-index: 10000;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      min-width: 160px;
+      display: none;
+    }
+    .context-menu button {
+      display: block;
+      width: 100%;
+      padding: 8px 16px;
+      background: none;
+      border: none;
+      color: var(--text-primary);
+      font-size: 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+    .context-menu button:hover { background: var(--accent); color: white; }
+    .modal-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.7);
+      z-index: 20000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      animation: fadeIn 0.2s;
+    }
+    .modal {
+      background: var(--bg-secondary);
+      padding: 24px;
+      border-radius: 16px;
+      border: 1px solid var(--accent);
+      text-align: center;
+      width: 260px;
+      animation: scaleIn 0.3s;
+    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes scaleIn { from { transform: scale(0.8); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+    .stars-row { display: flex; justify-content: center; gap: 4px; margin: 14px 0; }
+    .star { font-size: 22px; cursor: pointer; color: #444; transition: all 0.2s; }
+    .star.active { color: #ffc107; transform: scale(1.2); }
+    .divider { border: none; border-top: 1px solid var(--border); margin: 4px 0; }
+    .empty-state { text-align: center; color: var(--text-secondary); padding: 20px; font-size: 13px; }
+    select {
+      background: var(--bg-secondary);
+      color: var(--text-primary);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 6px 10px;
+      font-size: 12px;
+      width: 100%;
+    }
+    .btn-save-disabled {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 10px;
+      font-weight: 600;
+      font-size: 13px;
+      background: #444;
+      color: #888;
+      cursor: not-allowed;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body data-theme="dark">
+  <div class="bg-aurora"></div>
+  <div class="content-wrapper">
+    <div class="header">
+      <div class="logo-area">
+        <div class="logo-icon">🎬</div>
+        <span class="logo-text">Кинопоиск PRO</span>
+      </div>
+      <div style="display: flex; align-items: center; gap: 6px;">
+        <button class="lang-btn" id="langToggle">RU</button>
+        <div class="theme-toggle dark" id="themeToggle">
+          <div class="toggle-thumb">🌙</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="action-buttons">
+      <button class="btn btn-primary" id="homeBtn"><img src="kinopoisk.png" style="width:18px;height:18px;"> Кинопоиск</button>
+      <button class="btn btn-secondary" id="gotoCxBtn" style="display:none;">▶ CX</button>
+    </div>
+
+    <div class="switches-group">
+      <div class="switch-row">
+        <span class="switch-label">Умная плашка</span>
+        <div class="mini-switch active" id="switchBanner"></div>
+      </div>
+      <div class="switch-row" id="autoHideRow" style="display:none;">
+        <span class="switch-label">Автоскрытие</span>
+        <div class="mini-switch" id="switchAutoHide"></div>
+      </div>
+      <div class="switch-row">
+        <span class="switch-label">Цифровая оценка</span>
+        <div class="mini-switch" id="switchNumeric"></div>
+      </div>
+    </div>
+
+    <div class="cx-row">
+      <div class="cx-domain" id="cxDomainDisplay">https://ww2.fkwatch.org</div>
+      <button class="btn-save-cx" id="saveCurrentCxBtn" title="Сохранить текущий сайт как CX">💾</button>
+    </div>
+
+    <hr class="divider">
+
+    <div class="tabs-scroll" id="tabsContainer"></div>
+    <div class="status-text" id="saveStatus"></div>
+    <button class="btn-save-disabled" id="saveToQuickBtn" disabled>⚠️ Вы не на CX-сайте</button>
+
+    <select id="sortSelect">
+      <option value="date">По дате</option>
+      <option value="alpha">По алфавиту</option>
+      <option value="rating">По оценке</option>
+    </select>
+
+    <div class="list" id="listContainer"></div>
+    <div class="context-menu" id="contextMenu"></div>
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>

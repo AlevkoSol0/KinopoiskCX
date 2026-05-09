@@ -1,0 +1,26 @@
+{
+  "manifest_version": 3,
+  "name": "Кинопоиск Плеер PRO",
+  "version": "5.3",
+  "description": "Умная плашка, быстрые переходы, библиотека фильмов с оценками. Поддерживает русский и английский языки.",
+  "icons": {
+    "128": "icon128.png"
+  },
+  "permissions": ["storage", "activeTab"],
+  "web_accessible_resources": [
+    {
+      "resources": ["icon128.png"],
+      "matches": ["*://*.kinopoisk.ru/*"]
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "content_scripts": [
+    {
+      "matches": ["*://*.kinopoisk.ru/*"],
+      "js": ["content.js"],
+      "run_at": "document_idle"
+    }
+  ]
+}
