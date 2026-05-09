@@ -1,4 +1,3 @@
-```markdown
 # KinopoiskCX
 
 Расширение для быстрого перехода с Кинопоиска на плеер CX.
@@ -49,4 +48,3 @@
 - content.js
 - icon128.png
 - kinopoisk.png
-```
